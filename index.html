@@ -1,13 +1,39 @@
 ---
 layout: default
-title: Your New Jekyll Site
+title: QR Code Generator - by Webbower
 ---
 
 <div id="home">
-  <h1>Blog Posts</h1>
-  <ul class="posts">
-    {% for post in site.posts %}
-      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}
-  </ul>
+	<form id="url-code" class="active" novalidate>
+		<!-- <fieldset>
+			<legend>Code Config</legend>
+			
+			<div class="field">
+				<label for="qr-width">Width</label>
+				<input type="number" name="qr-width" id="qr-width">
+			</div>
+			
+			<div class="field">
+				<label for="qr-height">Height</label>
+				<input type="number" name="qr-height" id="qr-height">
+			</div>
+		</fieldset> -->
+		
+		<fieldset>
+			<legend>URL Data</legend>
+			
+			<div class="field">
+				<label>URL</label>
+				<input type="url" name="url" id="url" autofocus style="width:50%;">
+			</div>
+		</fieldset>
+		
+		<fieldset class="actions">
+			<input type="hidden" name="type" value="url">
+			
+			<button type="submit">Generate Code</button>
+		</fieldset>
+	</form>
+	
+	<div id="qrcode"></div>
 </div>

@@ -1,44 +1,173 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>{{ page.title }}</title>
-        <meta name="viewport" content="width=device-width">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>{{ site.name }}</title>
+	<meta name="viewport" content="width=device-width">
 
-        <!-- syntax highlighting CSS -->
-        <link rel="stylesheet" href="/css/syntax.css">
+	<!-- syntax highlighting CSS -->
+	<!-- <link rel="stylesheet" href="/css/syntax.css"> -->
 
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="/css/screen.css">
+	<!-- Custom CSS -->
+	<!-- <link rel="stylesheet" href="/css/screen.css"> -->
 
-    </head>
-    <body>
+</head>
+<body>
 
-        <div class="site">
-          <div class="header">
-            <h1 class="title"><a href="/">{{ site.name }}</a></h1>
-            <a class="extra" href="/">home</a>
-          </div>
+	<div class="site">
+		<div class="header">
+			<h1 class="title">{{ site.name }}</h1>
+		</div>
 
-          {{ content }}
+		{{ content }}
 
-          <div class="footer">
-            <div class="contact">
-              <p>
-                Your Name<br />
-                What You Are<br />
-                you@example.com
-              </p>
-            </div>
-            <div class="contact">
-              <p>
-                <a href="https://github.com/yourusername">github.com/yourusername</a><br />
-                <a href="https://twitter.com/yourusername">twitter.com/yourusername</a><br />
-              </p>
-            </div>
-          </div>
-        </div>
+		<div class="footer">
+			<div class="contact">
+				<p>
+					Webbower<br />
+					Web Developer
+				</p>
+			</div>
+			<div class="contact">
+				<p>
+					<a href="https://github.com/webbower">github.com/webbower</a><br />
+					<a href="https://twitter.com/webbower">twitter.com/webbower</a><br />
+				</p>
+			</div>
+		</div>
+	</div>
 
-    </body>
+	<script src="js/vendor/qrcodejs/qrcode.js"></script>
+	<script>
+	/*
+		window.FormUtil = {
+			// Based on http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2
+			isSuccessfulControl: function(el) {
+				// return this.isInForm(el) &&    // Must be in a <form> element
+				// 	   this.hasName(el) &&     // Must have a control name (name attribute)
+				// 	   this.isDataField(el) && // Must be <input>, <select>, or <button>
+				// 	   !this.isDisabled(el) && // Must not be disabled
+				// 	   (
+				// 		   this.isSuccessfulToggleField(el) ||
+						   
+			},
+			
+			getNormalizedTagName: function(el) {
+				return el.tagName.toLowerCase();
+			},
+			
+			isInForm: function(el) {
+				return 'form' in el && el.form != null;
+			},
+			
+			isSelectTag: function(el) {
+				return this.getNormalizedTagName(el) === 'select';
+			},
+			
+			isInputTag: function(el) {
+				return this.getNormalizedTagName(el) === 'input';
+			},
+			
+			isButtonTag: function(el) {
+				return this.getNormalizedTagName(el) === 'button';
+			},
+			
+			isButtonInput: function(el) {
+				return /submit|reset|button/.test(this.getNormalizedTagName(el));
+			},
+			
+			isButton: function(el) {
+				return this.isButtonTag(el) || (this.isInputTag(el) && this.isButtonInput(el));
+			},
+			
+			hasName: function(el) {
+				return 'name' in el && el.name;
+			},
+			
+			isDataField: function(el) {
+				return el.tagName === 'input' || el.tagName === 'select' || el.tagName === 'button';
+			},
+			
+			isDisabled: function(el) {
+				return 'disabled' in el && el.disabled;
+			},
+			
+			isToggleField: function(el) {
+				return 'type' in el && (el.type === 'checkbox' || el.type === 'radio');
+			},
+			
+			isChecked: function(el) {
+				return 'checked' in el && el.checked;
+			},
+			
+			isSuccessfulToggleField: function(el) {
+				return this.isToggleField(el) && this.isChecked(el);
+			}
+		};
+	*/
+		function addEvent(el, evt, cb, capture) {
+			if (el && 'addEventListener' in el) {
+				el.addEventListener(evt, cb, !!capture);
+			}
+		}
+		
+		function getFormElement(form, name) {
+			return form.elements[name];
+		}
+	
+		function byId(str, context) {
+			context || (context = document);
+			return context.getElementById(str);
+		}
+
+		window.WBQR = {
+			forms: {},
+			
+			_config: {
+				width: 1200,
+				height: 1200
+			},
+			
+			absoluteUrl: function(str) {
+				if (! /^https?:\/\//.test(str)) {
+					console.log('Incomplete URL');
+					str = 'http://' + str;
+				}
+				
+				return str;
+			},
+			
+			createQR: function(el, data) {
+				return new QRCode(el, {
+					text: data || '',
+					width: this._config.width,
+					height: this._config.height
+				});
+			}
+		};
+
+		addEvent(window, 'DOMContentLoaded', function() {
+			byId('qrcode').style.cssText = 'width:' + WBQR._config.width + 'px;height:' + WBQR._config.height + 'px;border:1px solid #999;';
+		});
+
+		addEvent(window, 'load', function() {
+			addEvent(byId('url-code'), 'submit', function(ev) {
+				ev.preventDefault();
+				
+				var url = WBQR.absoluteUrl(getFormElement(this, 'url').value.trim());
+				
+				if (url) {
+					if (!WBQR.output) {
+						WBQR.output = WBQR.createQR('qrcode', url);
+					}
+					else {
+						WBQR.output.clear();
+						WBQR.output.makeCode(url);
+					}
+				}
+			});
+		});
+	</script>
+</body>
 </html>
